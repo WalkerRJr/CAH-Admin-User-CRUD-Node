@@ -1,5 +1,12 @@
-[build]
-    command = "npm run build"
-    publish = "dist" # Update with your build output directory
-
-[functions] = "functions"
+   [build]
+     command = "npm run build"
+     publish = "public"
+   [functions]
+     directory = "functions/"
+     node_bundler = "esbuild"
+     external_node_modules=["bcryptojs","cors","dayjs","dotenv","ejs","express","express-session","jsonwebtoken","mongoose","multer","serverless-http","uuid"]
+   [[redirects]]
+     from = "/*"
+     to = "/.netlify/functions/index"
+     status = 200
+     included_files = ["views/**", "public/**"]

@@ -26,7 +26,7 @@
                            <% credential.forEach((row, index) => { %>
                             <tr class="align-middle">
                                 <td><%= index %></td>
-                                <td><img src="<%= row.image %>" width="50" class="img-thumbnail"></td>
+                                <td><img src="/uploads/<%= row.image %>" width="50" class="img-thumbnail"></td>
                                 <td><b><%= row.email %></b></td>
                                 <td><%= row.password %> </td>
                                 <td>

@@ -1,10 +1,51 @@
-const express = require("express");
+const express = require('express');
+const mongoose = require('mongoose');
+const serverless = require('serverless-http');
+
+const session = require('express-session');
+const { v4:uuidv4 } = require("uuid")
+
+require('dotenv').config();
+
+const app = express();
 const router = express.Router();
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+.then(() => console.log(`MongoDB connection success on : ${mongoose.connection.host}`))
+.catch(err => console.error('Could not connect to MongoDB', err));
+
+//=============================================================================================
+// middlewares
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.use(
+    session({
+        secret:uuidv4(),
+        // secret:"my secret key",
+        saveUninitialized: false,       // Don't create session until something stored
+        resave: false,                  // Don't save session if unmodified
+    })
+);
+
+app.use((req, res, next) => {
+    res.locals.message = req.session.message;
+    delete req.session.message;
+    next();
+})
+
+// app.use(express.static('uploads'));
+app.use(express.static('public'));
+
+// set template engine
+app.set('view engine', 'ejs');
+
 const credential = require('../models/credentials');
+
 const multer = require('multer');
 const fs = require('fs');
 const bcryptjs = require('bcryptjs');
-
 const dayjs = require("dayjs");
 
 
@@ -12,11 +53,33 @@ const dayjs = require("dayjs");
 function dateFormat(date){
     return dayjs(date).format('ddd, MMM DD, YYYY hh:mm: A');
 }
-
-// image upload =========================================================================================
+// Regular Expression to reformat a US phone number in Javascript
+function formatPhone(str) {
+    var cleaned = ('' + str).replace(/\D/g, '');
+    var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+        var intlCode = (match[1] ? '+1 ' : '');
+        return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+    }
+    return " ";
+}
+// Format nickname
+function formatNickname(str){
+    return isEmpty(str)?'':'"' + str  + '"';
+}
+// Test for an empty string
+function isEmpty(value) {
+    return (typeof value == 'string' && !value.trim()) || typeof value == 'undefined' || value === null || value == 'undefined';
+}
+function getResidentType(record) {
+    let cate = [];
+    record.militaryService ? cate.push("Veteran") : ""; cate.push(record.personnelType) ;
+    return (cate.length>0)? cate.join(" | ") :""
+} 
+// image upload ===============================================================================
 var storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, './uploads')
+        cb(null, '../public/uploads')
     },
     filename: function(req, file, cb){
         cb(null, file.fieldname+"_"+Date.now()+"_"+file.originalname);
@@ -26,6 +89,19 @@ var storage = multer.diskStorage({
 var upload = multer({
     storage: storage,
 }).single("image");
+
+router.get("/",(req, res) => {
+    credential.find().exec()
+    .then((credential) =>{
+        res.render('index', {
+            title: "Maintenance-User",
+            credential: credential,
+        })       
+    })
+    .catch((err) =>{
+        res.json({ message: err.message });       
+    }) 
+});
 
 // Insert an resident into database route =====================================================
 router.post('/add',upload, async (req, res) => {
@@ -47,7 +123,7 @@ router.post('/add',upload, async (req, res) => {
         image: req.file.filename,
         password: new_password
     });
-    resident.save()
+    credential.save()
     .then(() => {
         req.session.message = {
             type: 'success',
@@ -65,18 +141,6 @@ router.get("/add",(req, res) => {
     res.render("add_credentials", { title: "Add credentials" });
 })
 
-router.get("/",(req, res) => {
-    credential.find().exec()
-    .then((credential) =>{
-        res.render('index', {
-            title: "Maintenance-User",
-            credential: credential,
-        })       
-    })
-    .catch((err) =>{
-        res.json({ message: err.message });       
-    }) 
-})
 // Edit an resident route =====================================================================
 router.get('/edit/:id', (req, res) => {
     let id = req.params.id;
@@ -84,8 +148,7 @@ router.get('/edit/:id', (req, res) => {
     .then((credential) => {
         res.render("edit_credentials", {
             title: "Edit credential",
-            credential: credential,
-            dateFormat: dateFormat
+            credential: credential
         })
     })
     .catch((err) =>{
@@ -113,7 +176,7 @@ router.post('/update/:id', upload, async (req, res) =>{
     if (req.file){
         new_image = req.file.filename;
         try {
-            fs.unlinkSync("./uploads/" + req.body.old_image);
+            fs.unlinkSync("./public/uploads/" + req.body.old_image);
         } catch(err){
             console.log(err);
         }
@@ -146,7 +209,7 @@ router.get('/delete/:id', (req, res) => {
 
     if (req.file){
         try {
-            fs.unlinkSync("./uploads/" + req.body.image);
+            fs.unlinkSync("./public/uploads/" + req.body.image);
         } catch(err){
             console.log(err);
         }
@@ -166,6 +229,7 @@ router.get('/delete/:id', (req, res) => {
         })
 
 });
+// ============================================================================================
+app.use('/', router);
 
-
-module.exports = router;
+module.exports.handler = serverless(app);
