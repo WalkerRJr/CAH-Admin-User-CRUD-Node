@@ -13,6 +13,15 @@ function dateFormat(date){
     return dayjs(date).format('ddd, MMM DD, YYYY hh:mm: A');
 }
 
+// If resident lived at the Vineyards less than or equal 45 days there "NEW" 
+function checkDate(date) { 
+    var date1 = dayjs(date);
+    var date2 = dayjs();
+    var diff = date2.diff(date1,'day',true);
+
+    return !date ? "" : diff <= 45 ? "NEW" : "";
+}
+
 // image upload =========================================================================================
 var storage = multer.diskStorage({
     destination: function(req, file, cb){
@@ -47,6 +56,7 @@ router.post('/add',upload, async (req, res) => {
         image: req.file.filename,
         password: new_password
     });
+
     resident.save()
     .then(() => {
         req.session.message = {
@@ -61,16 +71,17 @@ router.post('/add',upload, async (req, res) => {
 
 });
 
-router.get("/add",(req, res) => {
+router.get("/add", (req, res) => {
     res.render("add_credentials", { title: "Add credentials" });
 })
 
-router.get("/",(req, res) => {
+router.get("/", (req, res) => {
     credential.find().exec()
     .then((credential) =>{
         res.render('index', {
             title: "Maintenance-User",
             credential: credential,
+            checkDate: checkDate
         })       
     })
     .catch((err) =>{
