@@ -72,14 +72,14 @@ router.post('/add',upload, async (req, res) => {
 });
 
 router.get("/add", (req, res) => {
-    res.render("add_credentials", { title: "Add credentials" });
+    res.render("add_credentials", { title: "Maintenance | Add" });
 })
 
 router.get("/", (req, res) => {
     credential.find().exec()
     .then((credential) =>{
         res.render('index', {
-            title: "Maintenance-User",
+            title: "Maintenance | User List",
             credential: credential,
             checkDate: checkDate
         })       
@@ -94,7 +94,7 @@ router.get('/edit/:id', (req, res) => {
     credential.findById(id)
     .then((credential) => {
         res.render("edit_credentials", {
-            title: "Edit credential",
+            title: "Maintenance | Edit",
             credential: credential,
             dateFormat: dateFormat
         })
