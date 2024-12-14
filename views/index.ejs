@@ -12,13 +12,12 @@
             <% } %>
             <div class="table-responsive">
                 <% if (credential != '') { %>
-                    <table class="table table-striped my-1 fs-12">
+                    <table class="table table-striped my-1 fs-12" style="width:100%">
                         <thead>
                             <tr class="table-dark">
                                 <th>ID</th>
-                                <th>Image</th>
-                                <th>Email</th>
-                                <th>Password (bcrypt)</th>
+                                <th>User Name</th>
+                                <th>Authorization Token</th>
                                 <th></th>
                                 <th>Action</th>
                             </tr>
@@ -27,9 +26,8 @@
                            <% credential.forEach((row, index) => { %>
                             <tr class="align-middle">
                                 <td><%= index %></td>
-                                <td><img src="/uploads/<%= row.image %>" width="50" class="img-thumbnail"></td>
-                                <td><b><%= row.email %></b></td>
-                                <td><%= row.password %> </td>
+                                <td><b><%= row.username %></b></td>
+                                <td><%= row.token %> </td>
                                 <td><b class="badge rounded-pill bg-primary"><%= checkDate(row.createdAt) %></b></td>
                                 <td>
                                    <a href="/edit/<%= row._id %>" class="text-success"><i class="fas fa-edit mx-1 fs-6"></i></a> 

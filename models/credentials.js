@@ -2,23 +2,15 @@ const mongoose = require('mongoose');
 
 // Defining the schema for the 'users' credential
 const credentialSchema = new mongoose.Schema({
-    email: {
+    username: {
         type: String,
         required: true // 'email' field is required and must be a string
     },
-    image: {
+    token: {
         type: String,
         required: true // 'password' field is required and must be a string
     },
-    password: {
-        type: String,
-        required: false
-    },
     createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
         type: Date,
         default: Date.now
     }

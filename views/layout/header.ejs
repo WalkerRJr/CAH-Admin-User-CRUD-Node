@@ -3,51 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= locals.title ? title : 'Login System' %></title>
-    <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.datatables.net/v/bs5/dt-2.1.8/datatables.min.css" rel="stylesheet">
+    <title><%= locals.title ? title : 'CRUD Maintenance' %></title>
+    <link rel="icon" href="/images/favicon.ico?v=2" type="image/x-icon">
     
-    <style>   
-    @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');    
-        a:link {
-            text-decoration: none;
-        }
-        .thin {
-            font-weight: 100;
-        }
-        .semiBold {
-            font-weight: 700;
-        } 
-        .fs-10 {
-            font-size: 10px;
-        } 
-        .fs-12 {
-            font-size: 12px;
-        } 
-        .form-label, .form-check-label {
-            font-size: 12px;
-            font-weight: 300;
-            margin-bottom: -5px;
-            padding-left: 5px;
-        }
-        .form-select .form-control {
-            position: relative;
-            font-size: 16px;
-            height: auto;
-            padding: 10px;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
-        input:placeholder-shown {
-            color: red;
-            opacity: 0.5;
-            font-style: italic;
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.1.8/datatables.min.css" rel="stylesheet">
+
+    <link href="/css/style.css" rel="stylesheet"tkype="text/css">
+ 
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -63,8 +29,11 @@
             </button>
             <div id="my-nav" class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item active me-3">
+                    <li class="nav-item active me-3 pe-4">
                         <a class="'nav-link" href="/add"><i class="fas fa-user-plus me-1"></i>Add User</a>
+                    </li>
+                    <li class="nav-item active me-3 pe-4">
+                        <a class="'nav-link" href="javascript:void(0)"><i class="fas fa-share-from-square me-1"></i>Change to Resident List</a>
                     </li>
                 </ul>
             </div>

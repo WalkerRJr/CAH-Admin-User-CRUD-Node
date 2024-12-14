@@ -79,7 +79,7 @@ router.get("/", (req, res) => {
     credential.find().exec()
     .then((credential) =>{
         res.render('index', {
-            title: "Maintenance | User List",
+            // title: "Maintenance | User List",
             credential: credential,
             checkDate: checkDate
         })       
@@ -108,7 +108,6 @@ router.get('/edit/:id', (req, res) => {
 // Update resident route ======================================================================
 router.post('/update/:id', upload, async (req, res) =>{
     let id = req.params.id;
-    let new_image = '';
     let new_password = '';
     let str = req.body.password;
     let firstSixChars = str.slice(0,6);
@@ -121,27 +120,15 @@ router.post('/update/:id', upload, async (req, res) =>{
         }
     } 
 
-    if (req.file){
-        new_image = req.file.filename;
-        try {
-            fs.unlinkSync("./uploads/" + req.body.old_image);
-        } catch(err){
-            console.log(err);
-        }
-    } else {
-        new_image = req.body.old_image;
-    }
-
     credential.findByIdAndUpdate(id, {
-        email: req.body.email,
-        image: new_image,
+        username: req.body.username,
         password: new_password,
         updatedAt: Date.now()
         }) 
         .then((credential) =>{
             req.session.message = {
                 type: 'success',
-                message: credential.email + ' updated successfully!'
+                message: credential.username + ' updated successfully!'
             };
             res.redirect('/');
         })
@@ -154,22 +141,13 @@ router.post('/update/:id', upload, async (req, res) =>{
 // Delete resident route ======================================================================
 router.get('/delete/:id', (req, res) => {
     let id = req.params.id;
-
-    if (req.file){
-        try {
-            fs.unlinkSync("./uploads/" + req.body.image);
-        } catch(err){
-            console.log(err);
-        }
-    }
     
     credential.findByIdAndDelete(id)
         .then((result) =>{
             req.session.message = {
                 type: 'info',
-                message: 'User (' + result.email  + ') deleted successfully!'
+                message: 'User (' + result.username  + ') deleted successfully!'
             };
-            fs.unlinkSync('./uploads/'+result.image);
             res.redirect('/');
         })
         .catch((err) =>{
